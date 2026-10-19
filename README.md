@@ -2,36 +2,49 @@
 
 A generic, data-driven visual generator: **JSON + template + art + text
 sections**. Any visual — TCG card, match announcement, gallery,
-annotated world map — is defined by:
+annotated world map, parchment rules poster — is defined by:
 
 - a **JSON data file** — the content (names, texts, numbers, image paths);
 - a **template** — a Python layout module in `templates/`;
 - **art** — image-model generated pictures (or real game assets),
-  **never carrying text**;
+  never carrying text;
 - **text sections** — drawn by the engine with a real vector font,
   which makes every output OCR-verifiable.
 
+Any game can use it: the engine and templates are project-agnostic,
+and all game-specific content lives in the JSON data files of the
+consuming project.
+
 ## Examples
 
-### TCG card — technology (`card_tcg`)
-![TCG card — Embuscade](examples/card_embuscade.jpg)
+### TCG card (`card_tcg`)
 
-Cost is drawn as repeated gear icons (the mod's tech currency),
-Magic-style.
+![TCG card — Ambush](examples/card_ambush.jpg)
+
+Cost is drawn as repeated gear icons (Magic-style currency icons).
 
 ### Match announcement (`match_announcement`)
-![Match announcement — HeN vs Ellenseg on Arabie](examples/match_hen_gaia.jpg)
+
+![Match announcement — Lion House vs Stag House](examples/match_lion_vs_stag.jpg)
 
 Attacker's civilizations under the crest, battle map in the central
 medallion.
 
 ### Gallery (`gallery`)
-![Gallery — territories with civilizations](examples/gallery_territoires.jpg)
+
+![Gallery — territories with civilizations](examples/gallery_territories.jpg)
 
 ### Annotated world map (`world_map`)
-![World map — 25 geo-placed territories](examples/world_map_example.jpg)
 
-Regions pinned on actual land at their geographic positions.
+![World map — regions pinned at geographic positions](examples/world_map_regions.jpg)
+
+Regions pinned on the map art at their geographic positions.
+
+### Parchment rules poster (`parchment_poster`)
+
+![Parchment rules poster](examples/rules_poster.jpg)
+
+Texture background, auto-fitted multi-column rules text.
 
 ## The one hard rule
 
@@ -47,11 +60,13 @@ correct text and prove it by OCR.
 ├── .agents/skills/         ← agent skill (visual generation pipeline)
 ├── engine/render.py        ← core renderer (templates, palettes, fonts)
 ├── tools/ocr_check.py      ← OCR validation (fail-closed)
+├── tools/make_demo_assets.py ← procedural demo art (no text, no model)
 ├── templates/              ← one layout module per visual kind
 │   ├── card_tcg.py           TCG card (fixed anatomy, gear-icon costs)
 │   ├── match_announcement.py Discord-sized X-vs-Y banner
 │   ├── gallery.py           N-items grid with captions
-│   └── world_map.py         annotated map (geo-placed region pins)
+│   ├── world_map.py         annotated map (geo-placed region pins)
+│   └── parchment_poster.py  rules poster on a parchment texture
 ├── data/                   ← JSON examples (source of truth per visual)
 └── examples/               ← rendered outputs + their assets
 ```
@@ -59,9 +74,10 @@ correct text and prove it by OCR.
 ## Usage
 
 ```bash
-pip install pillow
-python engine/render.py --data data/match_hen_gaia.json
-python tools/ocr_check.py --data data/match_hen_gaia.json   # validate
+pip install pillow matplotlib
+python tools/make_demo_assets.py                       # demo art
+python engine/render.py --data data/card_ambush.json   # render
+python tools/ocr_check.py --data data/card_ambush.json # validate
 ```
 
 The `template` key selects the layout module. Each template documents
@@ -83,9 +99,10 @@ example.
 
 ## Status
 
-Prototype, validated on the Kingdoms mod deck (10 technology cards,
-48 territory cards, parchment rules poster) and the four templates
-above. Roadmap: extract a proper pip-installable library (see the
-issues) with a plugin API for templates and art providers.
+Prototype, validated on a 10-card technology deck, a 48-card
+territory deck, a parchment rules poster and the five templates
+above, with project-agnostic data. Roadmap: extract a proper
+pip-installable library (see the issues) with a plugin API for
+templates and art providers.
 
 License: MIT.

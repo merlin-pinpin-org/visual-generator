@@ -1,0 +1,67 @@
+{
+  "template": "world_map",
+  "output": "examples/world_map_regions.jpg",
+  "art": "examples/assets/battle.jpg",
+  "sections": {
+    "title": "THE WORLD — WEEK 3",
+    "footer": "Demo Game — Season II",
+    "regions": [
+      {
+        "name": "Northern Pass",
+        "x": 300,
+        "y": 260,
+        "color": "#7aa0c0",
+        "note": "Wolves · Lion"
+      },
+      {
+        "name": "Twin Lakes",
+        "x": 520,
+        "y": 380,
+        "color": "#5c8a4e",
+        "note": "Otters · Stag"
+      },
+      {
+        "name": "Black Forest",
+        "x": 680,
+        "y": 240,
+        "color": "#5c8a4e",
+        "note": "Elks · Lion"
+      },
+      {
+        "name": "Golden Coast",
+        "x": 285,
+        "y": 640,
+        "color": "#3a7a5c",
+        "note": "Foxes · Stag"
+      },
+      {
+        "name": "Iron Hills",
+        "x": 1000,
+        "y": 200,
+        "color": "#a08a5a",
+        "note": "Bears · Lion"
+      },
+      {
+        "name": "Sun Valley",
+        "x": 830,
+        "y": 700,
+        "color": "#b08d4a",
+        "note": "Hawks · Stag"
+      },
+      {
+        "name": "Mist Marsh",
+        "x": 400,
+        "y": 900,
+        "color": "#4a6a5c",
+        "note": "Boars · Lion"
+      },
+      {
+        "name": "Old Crossroad",
+        "x": 760,
+        "y": 1000,
+        "color": "#7a5a3a",
+        "note": "Ravens · Stag"
+      }
+    ]
+  }
+}

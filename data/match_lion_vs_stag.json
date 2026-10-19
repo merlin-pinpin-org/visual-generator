@@ -1,0 +1,21 @@
+{
+  "template": "match_announcement",
+  "output": "examples/match_lion_vs_stag.jpg",
+  "art": "examples/assets/battle.jpg",
+  "sections": {
+    "left_name": "Lion House",
+    "left_crest": "examples/assets/crest_lion.png",
+    "left_civs": [
+      "examples/assets/civ_red.png",
+      "examples/assets/civ_green.png"
+    ],
+    "right_name": "Stag House",
+    "right_crest": "examples/assets/crest_stag.png",
+    "map_art": "examples/assets/terr_golden-coast.jpg",
+    "map_name": "Golden Coast",
+    "vs": "VS",
+    "context_line": "Season attack — Cycle 3",
+    "sub_line": "Sunday 23:30 · Season II",
+    "footer": "Demo Game"
+  }
+}

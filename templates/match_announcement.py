@@ -3,11 +3,11 @@
 
 Landscape 1200×675 (Discord embed ratio). Composition, left to right:
 
-- **attacker side** (left): large crest, kingdom name below, then up to
+- **attacker side** (left): large crest, team name below, then up to
   3 civilization icons (the civs fielded by the attacker) in a row;
 - **center**: the battle map thumbnail in a gold medallion, map name
-  under it, VS badge between the two kingdoms;
-- **defender side** (right): large crest, kingdom name below;
+  under it, VS badge between the two teams;
+- **defender side** (right): large crest, team name below;
 - backdrop: a dim battle scene, no empty plate zones — every zone
   carries image or text.
 
@@ -18,17 +18,17 @@ JSON schema::
       "output": "examples/match.jpg",
       "art": "path/to/battle_backdrop.jpg",
       "sections": {
-        "left_name": "Royaume des HeN",
+        "left_name": "Lion House",
         "left_crest": "path/to/blason.png",
         "left_civs": ["path/civ1.png", "path/civ2.png"],  # max 3 shown
-        "right_name": "Royaume d'Ellenseg",
+        "right_name": "Stag House",
         "right_crest": "path/to/blason.png",
         "map_art": "path/to/map_thumbnail.png",
         "map_name": "Arabie",
         "vs": "VS",
         "context_line": "Attaque — Cycle 3",
         "sub_line": "Dimanche 23 h 30 · Saison II",
-        "footer": "Mod Kingdoms"
+        "footer": "Demo Game"
       }
     }
 """
@@ -106,7 +106,7 @@ def render(data, fonts):
     d.text((mcx, mcy + m // 2 + 32), sec.get("map_name", ""),
            font=ImageFont.truetype(fonts["b"], 32), fill=pal["text_light"], anchor="mm")
 
-    # --- VS badge between the kingdoms ---
+    # --- VS badge between the teams ---
     r = 46
     cy = 205
     d.ellipse([mcx - 230 - r, cy - r, mcx - 230 + r, cy + r],

@@ -13,10 +13,10 @@ JSON schema::
       "art": "path/to/world_map_art.jpg",
       "sections": {
         "title": "LE MONDE — SEMAINE 3",
-        "footer": "Mod Kingdoms — Saison II",
+        "footer": "Demo Game — Season II",
         "regions": [
-          {"name": "Forêt Noire", "x": 210, "y": 330,
-           "color": "#5c8a4e", "note": "Celtes · HeN"}
+          {"name": "Black Forest", "x": 210, "y": 330,
+           "color": "#5c8a4e", "note": "Elks · Lion"}
         ]
       }
     }

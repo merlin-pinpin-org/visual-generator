@@ -71,4 +71,4 @@ fonts)` + `DEFAULT_PALETTE`, document the JSON schema in the
   world_map template).
 - Fonts: DejaVu Serif located via matplotlib; `--font-dir` overrides.
 - Binary assets in git: keep example assets small (≤ ~300 KB each)
-  and meaningful names (`crest_hen.png`, not `Gr508B4g-hen.png`).
+  and meaningful names (`crest_lion.png`, not `Gr508B4g-lion.png`).

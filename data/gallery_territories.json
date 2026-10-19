@@ -1,0 +1,53 @@
+{
+  "template": "gallery",
+  "output": "examples/gallery_territories.jpg",
+  "sections": {
+    "title": "DEMO GAME — Territories",
+    "item_width": 400,
+    "item_height": 500,
+    "columns": 4,
+    "gap": 24,
+    "items": [
+      {
+        "art": "examples/assets/terr_northern-pass.jpg",
+        "caption": "Northern Pass",
+        "sub": "Grants the Wolves civilization"
+      },
+      {
+        "art": "examples/assets/terr_twin-lakes.jpg",
+        "caption": "Twin Lakes",
+        "sub": "Grants the Otters civilization"
+      },
+      {
+        "art": "examples/assets/terr_black-forest.jpg",
+        "caption": "Black Forest",
+        "sub": "Grants the Elks civilization"
+      },
+      {
+        "art": "examples/assets/terr_golden-coast.jpg",
+        "caption": "Golden Coast",
+        "sub": "Grants the Foxes civilization"
+      },
+      {
+        "art": "examples/assets/terr_iron-hills.jpg",
+        "caption": "Iron Hills",
+        "sub": "Grants the Bears civilization"
+      },
+      {
+        "art": "examples/assets/terr_sun-valley.jpg",
+        "caption": "Sun Valley",
+        "sub": "Grants the Hawks civilization"
+      },
+      {
+        "art": "examples/assets/terr_mist-marsh.jpg",
+        "caption": "Mist Marsh",
+        "sub": "Grants the Boars civilization"
+      },
+      {
+        "art": "examples/assets/terr_old-crossroad.jpg",
+        "caption": "Old Crossroad",
+        "sub": "Grants the Ravens civilization"
+      }
+    ]
+  }
+}

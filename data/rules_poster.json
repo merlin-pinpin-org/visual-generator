@@ -1,0 +1,30 @@
+{
+  "template": "parchment_poster",
+  "output": "examples/rules_poster.jpg",
+  "art": "examples/assets/parchment.jpg",
+  "sections": {
+    "title": "THE RULES OF THE GAME",
+    "subtitle": "Demo Game — Season II",
+    "footer": "— As it is written, so shall it be played —",
+    "source_line": "Source : docs/rules",
+    "columns": 2,
+    "sections": [
+      {
+        "head": "The Realm and the Season",
+        "body": "A season lasts four weeks, split into cycles. Each realm is ruled by one player, and the realm's fate is decided by its territories."
+      },
+      {
+        "head": "Territories",
+        "body": "Each territory is a map of the realm. Holding it grants resources and access to unique actions."
+      },
+      {
+        "head": "Attacks",
+        "body": "Attacks are declared in the war council channel. The defender may spend one defense point to redirect the assault."
+      },
+      {
+        "head": "Technologies",
+        "body": "Technologies are bought with gear points. Each one grants a special action, usable once per cycle unless stated otherwise."
+      }
+    ]
+  }
+}

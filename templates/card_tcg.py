@@ -30,7 +30,7 @@ JSON schema::
         "extra_label": "Condition liée :",  # optional bottom box
         "extra_value": "Celtes",
         "footer_left": "1/10",
-        "footer_right": "Mod Kingdoms"
+        "footer_right": "Demo Game"
       }
     }
 """

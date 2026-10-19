@@ -5,10 +5,11 @@ Instructions for AI coding agents working in this repository.
 ## What this repo is
 
 A data-driven visual generator: **JSON + template + art + text
-sections**. The Kingdoms Discord bot uses it for TCG cards, match
-announcements, galleries and annotated world maps. The long-term goal
-is a pip-installable library (see the `lib` issue) — keep the engine
-template-agnostic and the Kingdoms specifics in `data/`.
+sections**. Any game can use it for TCG cards, match announcements,
+galleries, annotated world maps or parchment rules posters. The
+long-term goal is a pip-installable library (see the `lib` issue) —
+keep the engine and templates project-agnostic; game specifics
+belong in the JSON data files of the consuming project, never here.
 
 ## Non-negotiable rules
 
@@ -25,8 +26,8 @@ template-agnostic and the Kingdoms specifics in `data/`.
    shift text zones. If a text box moves depending on the art, the
    template is wrong — fix the template.
 5. **Assets are content.** The JSON references the real game assets
-   (kingdom crests, map thumbnails, civilization icons). The renderer
-   places what it is given; it never invents or substitutes assets.
+   (crests, map thumbnails, civilization icons). The renderer places
+   what it is given; it never invents or substitutes assets.
 6. **Maps need geographic care.** Before pinning regions on a
    `world_map`, inspect the map art and place each territory on
    actual land at its geographic position. Pins in the ocean are a
@@ -34,6 +35,10 @@ template-agnostic and the Kingdoms specifics in `data/`.
 7. **Art URLs from image generation expire (~1 h).** Download
    immediately; deliver via committed files (raw GitHub URLs), never
    via generated links or sandbox paths.
+8. **No game-specific content.** Names, brands, crests and lore of a
+   concrete game live in that game's repository. This repo ships
+   neutral examples only (`tools/make_demo_assets.py` generates the
+   demo art procedurally, without any image model).
 
 ## Workflow
 
@@ -58,7 +63,6 @@ template-agnostic and the Kingdoms specifics in `data/`.
 
 ## Style
 
-- Python: fail-closed (explicit errors, non-zero exits, no partial
-  writes), documented docstrings, no comments noise.
-- Commits: `area: what changed` (e.g. `template: match_announcement
-  crests`).
+Fail-closed everywhere: unknown template, missing section field,
+unreadable art, missing fonts, non-fitting poster content — all abort
+with a non-zero exit and an explicit message.
