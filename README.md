@@ -46,6 +46,16 @@ Regions pinned on the map art at their geographic positions.
 
 Texture background, auto-fitted multi-column rules text.
 
+## Agent skill
+
+This repository ships the canonical agent skill for the library:
+[`.agents/skills/visual-generator/SKILL.md`](.agents/skills/visual-generator/SKILL.md)
+(plus its [`scripts/render_and_check.py`](.agents/skills/visual-generator/scripts/render_and_check.py)
+batch helper). Any project using the library should point its agents
+at that skill: it documents the install, the CLIs, the per-template
+JSON schemas, the OCR validation contract and the known pitfalls —
+everything needed to reproduce the reference rendering.
+
 ## The one hard rule
 
 **The image model never renders text.** Image models produce
@@ -73,12 +83,22 @@ correct text and prove it by OCR.
 
 ## Usage
 
+Install (pip or uv):
+
 ```bash
-pip install pillow matplotlib
-python tools/make_demo_assets.py                       # demo art
-python engine/render.py --data data/card_ambush.json   # render
-python tools/ocr_check.py --data data/card_ambush.json # validate
+uv add visual-generator        # or: pip install visual-generator
 ```
+
+CLIs provided by the package:
+
+```bash
+vg-demo-assets                                   # demo art -> examples/assets/
+vg-render --data data/card_ambush.json           # render
+vg-ocr-check --data data/card_ambush.json       # validate (fail-closed)
+```
+
+From a repo checkout the module paths still work
+(`python engine/render.py --data …`, `python tools/ocr_check.py …`).
 
 The `template` key selects the layout module. Each template documents
 its JSON schema in its docstring; each `data/*.json` is a working

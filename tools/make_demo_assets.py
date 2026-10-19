@@ -124,17 +124,23 @@ def card_art(path, seed, w=800, h=640):
     img.save(path, quality=86)
 
 
-os.makedirs(OUT, exist_ok=True)
-parchment(f"{OUT}/parchment.jpg")
-crest(f"{OUT}/crest_lion.png", 11)
-crest(f"{OUT}/crest_stag.png", 29)
-icon(f"{OUT}/civ_red.png", 3)
-icon(f"{OUT}/civ_blue.png", 5)
-icon(f"{OUT}/civ_green.png", 8)
-scene(f"{OUT}/battle.jpg", 13)
-card_art(f"{OUT}/card_art_ambush.jpg", 17)
-for i, name in enumerate(["northern-pass", "twin-lakes", "black-forest",
-                          "golden-coast", "iron-hills", "sun-valley",
-                          "mist-marsh", "old-crossroad"], start=21):
-    territory(f"{OUT}/terr_{name}.jpg", i)
-print("demo assets written to", OUT)
+
+def main() -> None:
+    os.makedirs(OUT, exist_ok=True)
+    parchment(f"{OUT}/parchment.jpg")
+    crest(f"{OUT}/crest_lion.png", 11)
+    crest(f"{OUT}/crest_stag.png", 29)
+    icon(f"{OUT}/civ_red.png", 3)
+    icon(f"{OUT}/civ_blue.png", 5)
+    icon(f"{OUT}/civ_green.png", 8)
+    scene(f"{OUT}/battle.jpg", 13)
+    card_art(f"{OUT}/card_art_ambush.jpg", 17)
+    for i, name in enumerate(["northern-pass", "twin-lakes", "black-forest",
+                              "golden-coast", "iron-hills", "sun-valley",
+                              "mist-marsh", "old-crossroad"], start=21):
+        territory(f"{OUT}/terr_{name}.jpg", i)
+    print("demo assets written to", OUT)
+
+
+if __name__ == "__main__":
+    main()
