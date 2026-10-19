@@ -90,6 +90,26 @@ def import_template(name: str):
     return module
 
 
+def render_visual(data: dict, font_dir: str | None = None, out: str | None = None) -> str:
+    """Render one in-memory visual definition; returns the output path.
+
+    Library entry point for programmatic use (bot integrations,
+    drivers): same fail-closed contract as the CLI. ``data`` is the
+    visual dict (``template``, ``output``, ``sections``…).
+    """
+    if out:
+        data = {**data, "output": out}
+    fonts = load_fonts(font_dir)
+    module = import_template(data["template"])
+    module.resolve_palette = resolve_palette  # injected, templates never import engine
+    img = module.render(data, fonts)
+    dest = data["output"]
+    os.makedirs(os.path.dirname(os.path.abspath(dest)), exist_ok=True)
+    img.save(dest, quality=93)
+    print("ok", dest)
+    return dest
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Render a JSON visual with a template")
     parser.add_argument("--data", required=True, help="JSON visual definition")
@@ -99,17 +119,8 @@ def main() -> None:
 
     with open(args.data, encoding="utf-8") as fh:
         data = json.load(fh)
-    if args.out:
-        data["output"] = args.out
 
-    fonts = load_fonts(args.font_dir)
-    module = import_template(data["template"])
-    module.resolve_palette = resolve_palette  # injected, templates never import engine
-    img = module.render(data, fonts)
-    out = data["output"]
-    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
-    img.save(out, quality=93)
-    print("ok", out)
+    render_visual(data, args.font_dir, args.out)
 
 
 if __name__ == "__main__":

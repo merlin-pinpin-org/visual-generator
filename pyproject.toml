@@ -20,5 +20,8 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["engine", "templates", "tools"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"engine/py.typed" = "engine/py.typed"
+
 [tool.hatch.build]
 exclude = ["examples", "data", ".agents"]
