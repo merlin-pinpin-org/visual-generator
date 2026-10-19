@@ -145,7 +145,7 @@ def render(data, fonts):
            font=ImageFont.truetype(fonts["i"], 28), fill=pal["subtitle"], anchor="mm")
 
     has_extra = bool(sec.get("extra_label"))
-    r_bottom = extra_b if has_extra else rule_b
+    r_bottom = int(ch * 0.81) if has_extra else rule_b
     r_top = type_b + 6
     d.rounded_rectangle([MARGIN_X, r_top, cw - MARGIN_X - 1, r_bottom], radius=14,
                         fill=pal["box"], outline=pal["gold2"], width=3)
@@ -163,11 +163,11 @@ def render(data, fonts):
         y += 8
 
     if has_extra:
-        d.rounded_rectangle([MARGIN_X, r_bottom + 12, cw - MARGIN_X - 1, extra_b], radius=14,
+        d.rounded_rectangle([MARGIN_X, r_bottom + 10, cw - MARGIN_X - 1, extra_b], radius=14,
                             fill=pal["band"], outline=pal["gold"], width=3)
-        d.text((cw // 2, (r_bottom + 12 + extra_b) // 2 - 16), sec["extra_label"],
+        d.text((cw // 2, (r_bottom + 10 + extra_b) // 2 - 16), sec["extra_label"],
                font=ImageFont.truetype(fonts["r"], 26), fill=pal["subtitle"], anchor="mm")
-        d.text((cw // 2, (r_bottom + 12 + extra_b) // 2 + 18), sec["extra_value"],
+        d.text((cw // 2, (r_bottom + 10 + extra_b) // 2 + 18), sec["extra_value"],
                font=ImageFont.truetype(fonts["b"], 32), fill=pal["text_light"], anchor="mm")
 
     foot_t = extra_b + 8
