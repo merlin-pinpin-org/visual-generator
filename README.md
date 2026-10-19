@@ -11,6 +11,28 @@ annotated world map — is defined by:
 - **text sections** — drawn by the engine with a real vector font,
   which makes every output OCR-verifiable.
 
+## Examples
+
+### TCG card — technology (`card_tcg`)
+![TCG card — Embuscade](examples/card_embuscade.jpg)
+
+Cost is drawn as repeated gear icons (the mod's tech currency),
+Magic-style.
+
+### Match announcement (`match_announcement`)
+![Match announcement — HeN vs Ellenseg on Arabie](examples/match_hen_gaia.jpg)
+
+Attacker's civilizations under the crest, battle map in the central
+medallion.
+
+### Gallery (`gallery`)
+![Gallery — territories with civilizations](examples/gallery_territoires.jpg)
+
+### Annotated world map (`world_map`)
+![World map — 25 geo-placed territories](examples/world_map_example.jpg)
+
+Regions pinned on actual land at their geographic positions.
+
 ## The one hard rule
 
 **The image model never renders text.** Image models produce
@@ -21,15 +43,17 @@ correct text and prove it by OCR.
 ## Project layout
 
 ```
-├── engine/render.py       ← core renderer (templates, palettes, fonts)
-├── templates/             ← one layout module per visual kind
-│   ├── card_tcg.py          TCG card (fixed anatomy, gear-icon costs)
-│   ├── match_announcement.py Discord-sized X-vs-Y banner (crests, map
-│   │                        medallion, civ icons under the attacker)
+├── AGENTS.md               ← agent instructions (rules, workflow)
+├── .agents/skills/         ← agent skill (visual generation pipeline)
+├── engine/render.py        ← core renderer (templates, palettes, fonts)
+├── tools/ocr_check.py      ← OCR validation (fail-closed)
+├── templates/              ← one layout module per visual kind
+│   ├── card_tcg.py           TCG card (fixed anatomy, gear-icon costs)
+│   ├── match_announcement.py Discord-sized X-vs-Y banner
 │   ├── gallery.py           N-items grid with captions
 │   └── world_map.py         annotated map (geo-placed region pins)
-├── data/                  ← JSON examples (source of truth per visual)
-└── examples/              ← rendered outputs + their assets
+├── data/                   ← JSON examples (source of truth per visual)
+└── examples/               ← rendered outputs + their assets
 ```
 
 ## Usage
@@ -37,6 +61,7 @@ correct text and prove it by OCR.
 ```bash
 pip install pillow
 python engine/render.py --data data/match_hen_gaia.json
+python tools/ocr_check.py --data data/match_hen_gaia.json   # validate
 ```
 
 The `template` key selects the layout module. Each template documents
