@@ -1,0 +1,13 @@
+{
+  "template": "card_tcg",
+  "output": "examples/card_embuscade.jpg",
+  "sections": {
+    "name": "Embuscade",
+    "cost": 2,
+    "art": "examples/assets/embuscade_full.jpg",
+    "type_line": "Action spéciale — Technologie",
+    "rule": "Attaque supplémentaire.\nDélai minimum : 1 heure.\nLe défenseur volontaire ne dépense pas son point de défense.",
+    "footer_left": "1/10",
+    "footer_right": "Mod Kingdoms"
+  }
+}
