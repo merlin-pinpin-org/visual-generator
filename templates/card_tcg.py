@@ -115,16 +115,24 @@ def render(data, fonts):
     d.text((60, (26 + name_b) // 2), sec["name"], font=nf, fill=pal["text_light"], anchor="lm")
 
     cost = sec.get("cost", 0)
-    try:
-        cost = int(cost)
-    except (TypeError, ValueError):
-        cost = 0
-    if cost > 0:
-        gs = 34
-        cy = (26 + name_b) // 2
-        x0 = cw - 60 - cost * (gs + 6)
-        for k in range(cost):
-            draw_gear(d, x0 + k * (gs + 6) + gs // 2, cy, gs // 2)
+    cy = (26 + name_b) // 2
+    if isinstance(cost, str) and cost:
+        r = 40
+        cx = cw - 76
+        d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=pal["badge"],
+                  outline=pal["badge_ring"], width=4)
+        cf = ImageFont.truetype(fonts["b"], 48 if len(cost) <= 2 else 30)
+        d.text((cx, cy), cost, font=cf, fill=pal["badge_txt"], anchor="mm")
+    else:
+        try:
+            cost = int(cost)
+        except (TypeError, ValueError):
+            cost = 0
+        if cost > 0:
+            gs = 34
+            x0 = cw - 60 - cost * (gs + 6)
+            for k in range(cost):
+                draw_gear(d, x0 + k * (gs + 6) + gs // 2, cy, gs // 2)
 
     art = Image.open(sec["art"]).convert("RGB")
     win_w = cw - 88

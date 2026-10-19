@@ -1,0 +1,76 @@
+{
+  "template": "contact_sheet",
+  "output": "examples/sheet_ambush.jpg",
+  "sections": {
+    "title": "DEMO GAME — Technologies",
+    "columns": 5,
+    "card_template": "card_tcg",
+    "cards": [
+      {
+        "template": "card_tcg",
+        "output": "examples/card_ambush.jpg",
+        "sections": {
+          "name": "Ambush",
+          "cost": 2,
+          "art": "examples/assets/card_art_ambush.jpg",
+          "type_line": "Special action — Technology",
+          "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+          "footer_left": "1/10",
+          "footer_right": "Demo Game"
+        }
+      },
+      {
+        "template": "card_tcg",
+        "output": "examples/card_ambush.jpg",
+        "sections": {
+          "name": "Ambush",
+          "cost": 2,
+          "art": "examples/assets/card_art_ambush.jpg",
+          "type_line": "Special action — Technology",
+          "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+          "footer_left": "1/10",
+          "footer_right": "Demo Game"
+        }
+      },
+      {
+        "template": "card_tcg",
+        "output": "examples/card_ambush.jpg",
+        "sections": {
+          "name": "Ambush",
+          "cost": 2,
+          "art": "examples/assets/card_art_ambush.jpg",
+          "type_line": "Special action — Technology",
+          "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+          "footer_left": "1/10",
+          "footer_right": "Demo Game"
+        }
+      },
+      {
+        "template": "card_tcg",
+        "output": "examples/card_ambush.jpg",
+        "sections": {
+          "name": "Ambush",
+          "cost": 2,
+          "art": "examples/assets/card_art_ambush.jpg",
+          "type_line": "Special action — Technology",
+          "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+          "footer_left": "1/10",
+          "footer_right": "Demo Game"
+        }
+      },
+      {
+        "template": "card_tcg",
+        "output": "examples/card_ambush.jpg",
+        "sections": {
+          "name": "Ambush",
+          "cost": 2,
+          "art": "examples/assets/card_art_ambush.jpg",
+          "type_line": "Special action — Technology",
+          "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+          "footer_left": "1/10",
+          "footer_right": "Demo Game"
+        }
+      }
+    ]
+  }
+}
