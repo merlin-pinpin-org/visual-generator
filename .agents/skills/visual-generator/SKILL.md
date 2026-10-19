@@ -90,6 +90,13 @@ bundle). Fonts auto-locate DejaVu Serif; `--font-dir` overrides.
   art).
 - `parchment_poster` — parchment texture background, titled, auto-
   fitted multi-column rules text, fail-closed when content cannot fit.
+- `info_card` — one prominent image + tag chips + up to two
+  label/value columns: profile, civilization or player card ("a
+  picture plus a lot of facts"). Replaces long read-only embeds.
+- `media_card` — image strip (up to 4) + tags + facts line + a
+  wrapped, visibly-clipped description: map sheet, media-heavy post.
+  The description must be synthesized in the JSON; the card wraps and
+  clips, it never reflows pages.
 
 New template? Copy an existing one, keep the contract: `render(data,
 fonts)` + `DEFAULT_PALETTE`, document the JSON schema in the
