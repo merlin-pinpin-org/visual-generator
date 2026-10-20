@@ -194,8 +194,9 @@ def render(data, fonts):
     if has_extra:
         box = Image.new("RGBA", (cw, extra_b - r_bottom - 12), (0, 0, 0, 0))
         bd2 = ImageDraw.Draw(box)
-        bd2.rounded_rectangle([MARGIN_X, 0, cw - MARGIN_X - 1, extra_b - r_bottom - 13], radius=14,
-                              fill=tuple(pal["band"]) + (216,), outline=pal["gold"] + (255,), width=3)
+        bd2.rounded_rectangle([MARGIN_X, 0, cw - MARGIN_X - 1, extra_b - r_bottom - 13],
+                              radius=14, fill=tuple(pal["band"]) + (216,),
+                              outline=pal["gold"] + (255,), width=3)
         c.alpha_composite(box, (0, r_bottom + 12))
         d = ImageDraw.Draw(c)
         d.text((cw // 2, (r_bottom + 12 + extra_b) // 2 - 16), sec["extra_label"],

@@ -48,12 +48,14 @@ def crest(path, seed, w=1024, h=1024):
     d.polygon([(w * 0.12, h * 0.08), (w * 0.5, h * 0.08), (w * 0.5, h * 0.95),
                (w * 0.12, h * 0.62)], fill=c2 + (255,))
     for _ in range(5):
-        x, y = rng.randrange(int(w * 0.2), int(w * 0.8)), rng.randrange(int(h * 0.12), int(h * 0.55))
+        x = rng.randrange(int(w * 0.2), int(w * 0.8))
+        y = rng.randrange(int(h * 0.12), int(h * 0.55))
         r = rng.randint(20, 60)
         d.ellipse([x - r, y - r, x + r, y + r], fill=(235, 222, 190, 255),
                   outline=(38, 28, 18, 255), width=6)
     for _ in range(3):
-        x1, y1 = rng.randrange(int(w * 0.15), int(w * 0.7)), rng.randrange(int(h * 0.1), int(h * 0.5))
+        x1 = rng.randrange(int(w * 0.15), int(w * 0.7))
+        y1 = rng.randrange(int(h * 0.1), int(h * 0.5))
         x2, y2 = x1 + rng.randint(60, 240), y1 + rng.randint(60, 240)
         d.line([x1, y1, x2, y2], fill=(235, 222, 190, 255), width=10)
     img.save(path, optimize=True)

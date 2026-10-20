@@ -17,9 +17,7 @@ downgrades the OCR step in sandboxes without tesseract).
 from __future__ import annotations
 
 import argparse
-import json
 import os
-import subprocess
 import sys
 
 
@@ -39,9 +37,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--data", nargs="+", required=True, help="JSON visual file(s) or directory")
     args = ap.parse_args()
-    from engine.render import main as render_main  # noqa: F401  (documentation)
     import engine.render as render_mod
     import tools.ocr_check as check_mod
+    from engine.render import main as render_main  # noqa: F401  (documentation)
 
     failures = []
     for path in collect(args.data):

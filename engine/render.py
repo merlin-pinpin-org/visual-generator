@@ -30,11 +30,12 @@ import os
 import sys
 
 try:
-    from PIL import Image, ImageDraw, ImageFont
+    from PIL import Image, ImageFont  # noqa: F401  (availability guard)
 except ImportError:
     sys.exit("Pillow is required: pip install pillow")
 
-TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "templates")
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMPLATE_DIR = os.path.join(_ROOT, "templates")
 TEMPLATE_EP_GROUP = "visual_generator.templates"
 
 
@@ -52,8 +53,8 @@ def load_fonts(font_dir: str | None = None) -> dict:
     except ImportError:
         pass
     candidates += [
-        os.path.expanduser("~/.local/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf"),
         "/usr/share/fonts/truetype/dejavu",
+        "/usr/local/share/fonts/truetype/dejavu",
     ]
     for d in candidates:
         if os.path.isfile(os.path.join(d, "DejaVuSerif-Bold.ttf")):
@@ -102,7 +103,8 @@ def import_template(name: str):
                 continue
             break
         if module is None:
-            sys.exit(f"unknown template: {name!r} (expected {path} or an entry point in group {TEMPLATE_EP_GROUP!r})")
+            sys.exit(f"unknown template: {name!r} "
+                     f"(expected {path} or an entry point in group {TEMPLATE_EP_GROUP!r})")
     if not hasattr(module, "render"):
         sys.exit(f"template {name!r} has no render(data, fonts) function")
     return module

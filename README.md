@@ -142,6 +142,20 @@ or expose a `visual_generator.art_providers` entry point.
    real game assets (crests, map thumbnails, civilization icons); the
    renderer places them, it never invents them.
 
+## Release
+
+Releases are tag-driven. CI (lint + tests + build) runs on every PR
+and push to `main`. To release:
+
+1. Make sure `main` is green.
+2. Tag manually: `git tag v0.1.0 && git push origin v0.1.0`.
+3. The `Release` workflow builds sdist + wheel, publishes a GitHub
+   Release with the artifacts and release notes, and publishes to PyPI
+   (trusted publisher or `PYPI_API_TOKEN` secret, `pypi` environment).
+
+The tag, the `pyproject.toml` version and the GitHub Release must
+always agree.
+
 ## Status
 
 Prototype, validated on a 10-card technology deck, a 48-card
