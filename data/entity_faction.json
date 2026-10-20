@@ -1,0 +1,24 @@
+{
+  "template": "entity_card",
+  "output": "examples/entity_faction.jpg",
+  "art": "examples/assets/card_art_ambush.jpg",
+  "backdrop": "examples/assets/battle.jpg",
+  "sections": {
+    "title": "Les Forestiens",
+    "type_line": "Civilisation forestière",
+    "plates": [
+      {
+        "head": "Bonus de civilisation",
+        "lines": ["Moulins +15% dès l'âge Féodal", "Tours de guet gratuites en bord de rivière"]
+      },
+      {
+        "head": "Style de jeu",
+        "lines": ["Expansion rapide, défense en profondeur"]
+      }
+    ],
+    "extra_label": "Unité unique",
+    "extra_value": "Archer sylvestre",
+    "footer_left": "faction:demo:forestians",
+    "footer_right": "Demo Game"
+  }
+}

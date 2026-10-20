@@ -100,16 +100,34 @@ CLIs provided by the package:
 
 ```bash
 vg-demo-assets                                   # demo art -> examples/assets/
-vg-render --data data/card_ambush.json           # render
-vg-ocr-check --data data/card_ambush.json       # validate (fail-closed)
+vg render --data data/card_ambush.json           # render (or vg-render)
+vg check --data data/card_ambush.json           # validate (or vg-ocr-check)
+vg templates                                    # list template names
+vg providers                                    # list art providers
 ```
 
 From a repo checkout the module paths still work
 (`python engine/render.py --data …`, `python tools/ocr_check.py …`).
+`make render` / `make check` re-render and validate every `data/*.json`
+example; `make test` runs the end-to-end suite (pytest).
 
 The `template` key selects the layout module. Each template documents
 its JSON schema in its docstring; each `data/*.json` is a working
 example.
+
+## Plugins
+
+Templates are plugins: third-party packages can ship additional layout
+modules by declaring an entry point in the `visual_generator.templates`
+group (object: a module exposing `render(data, fonts)` +
+`DEFAULT_PALETTE`) — `import_template` resolves built-ins first, then
+entry points. `vg templates` lists them all.
+
+Art comes from an `ArtProvider` (`engine.art`): `generate(prompt,
+out_path, width, height) -> path`. The shipped `solid` placeholder works
+without any API key; real providers (Mistral, BFL…) belong to the
+consuming project — subclass `ArtProvider`, `register_provider(instance)`
+or expose a `visual_generator.art_providers` entry point.
 
 ## Principles
 
@@ -128,8 +146,9 @@ example.
 
 Prototype, validated on a 10-card technology deck, a 48-card
 territory deck, a parchment rules poster and the five templates
-above, with project-agnostic data. Roadmap: extract a proper
-pip-installable library (see the issues) with a plugin API for
-templates and art providers.
+above, with project-agnostic data. Now a pip-installable library
+with plugin templates (entry points) and an `ArtProvider`
+abstraction; roadmap: publish to PyPI and wire it into the consuming
+games (see the issues).
 
 License: MIT.

@@ -19,15 +19,24 @@ by OCR. Never "save time" by asking the image model to write words.
 
 ## Install
 
-The library is pip/uv-installable and exposes three CLIs:
+The library is pip/uv-installable and exposes a grouped `vg` CLI plus
+the legacy per-command aliases:
 
 ```bash
 uv pip install visual-generator        # or: pip install visual-generator
 ```
 
-- `vg-render --data <visual.json>` — render one visual
-- `vg-ocr-check --data <visual.json>` — fail-closed OCR validation
+- `vg render --data <visual.json>` (alias `vg-render`) — render
+- `vg check --data <visual.json>` (alias `vg-ocr-check`) — fail-closed
+  OCR validation
+- `vg templates` — list template names (built-ins + plugins)
+- `vg providers` — list art providers (`solid` placeholder works
+  without any API key; real providers are the consuming project's)
 - `vg-demo-assets` — regenerate the demo art into `examples/assets/`
+
+Third-party template plugins ship via the `visual_generator.templates`
+entry-point group; art providers subclass `engine.art.ArtProvider`
+(entry-point group `visual_generator.art_providers`).
 
 In a project managed by uv, add the dependency and sync:
 

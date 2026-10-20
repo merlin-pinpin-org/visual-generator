@@ -35,6 +35,7 @@ except ImportError:
     sys.exit("Pillow is required: pip install pillow")
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "templates")
+TEMPLATE_EP_GROUP = "visual_generator.templates"
 
 
 def load_fonts(font_dir: str | None = None) -> dict:
@@ -78,16 +79,49 @@ def resolve_palette(base: dict, overrides: dict | None) -> dict:
 
 
 def import_template(name: str):
-    """Load templates/<name>.py; fail-closed when absent or invalid."""
+    """Load a template: built-in ``templates/<name>.py`` first, then
+    the ``visual_generator.templates`` entry-point group (third-party
+    plugin templates). Fail-closed when absent or invalid."""
     path = os.path.join(TEMPLATE_DIR, f"{name}.py")
-    if not os.path.isfile(path):
-        sys.exit(f"unknown template: {name!r} (expected {path})")
-    spec = importlib.util.spec_from_file_location(f"template_{name}", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    if os.path.isfile(path):
+        spec = importlib.util.spec_from_file_location(f"template_{name}", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+    else:
+        module = None
+        try:
+            import importlib.metadata as md
+
+            eps = md.entry_points(group=TEMPLATE_EP_GROUP, name=name)
+        except Exception:
+            eps = []
+        for ep in eps:
+            try:
+                module = ep.load()
+            except Exception:
+                continue
+            break
+        if module is None:
+            sys.exit(f"unknown template: {name!r} (expected {path} or an entry point in group {TEMPLATE_EP_GROUP!r})")
     if not hasattr(module, "render"):
         sys.exit(f"template {name!r} has no render(data, fonts) function")
     return module
+
+
+def list_templates() -> list[str]:
+    """Built-in template names + entry-point plugin template names."""
+    names = sorted(
+        f[:-3] for f in os.listdir(TEMPLATE_DIR)
+        if f.endswith(".py") and not f.startswith("_")
+    )
+    try:
+        import importlib.metadata as md
+
+        names += sorted(ep.name for ep in md.entry_points(group=TEMPLATE_EP_GROUP)
+                        if ep.name not in names)
+    except Exception:
+        pass
+    return names
 
 
 def render_visual(data: dict, font_dir: str | None = None, out: str | None = None) -> str:
@@ -117,7 +151,14 @@ def main() -> None:
     parser.add_argument("--data", required=True, help="JSON visual definition")
     parser.add_argument("--out", default=None, help="override the JSON output path")
     parser.add_argument("--font-dir", default=None, help="DejaVu Serif directory (auto-detected)")
+    parser.add_argument("--list-templates", action="store_true",
+                        help="list available template names and exit")
     args = parser.parse_args()
+
+    if args.list_templates:
+        for name in list_templates():
+            print(name)
+        return
 
     with open(args.data, encoding="utf-8") as fh:
         data = json.load(fh)

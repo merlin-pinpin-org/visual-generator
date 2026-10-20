@@ -8,7 +8,11 @@ license = { text = "MIT" }
 authors = [{ name = "merlin-pinpin-org" }]
 dependencies = ["pillow>=10.0.0", "matplotlib>=3.7.0"]
 
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "build", "twine"]
+
 [project.scripts]
+vg = "engine.cli:main"
 vg-render = "engine.render:main"
 vg-ocr-check = "tools.ocr_check:main"
 vg-demo-assets = "tools.make_demo_assets:main"
@@ -19,6 +23,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["engine", "templates", "tools"]
+
+[tool.hatch.build.targets.sdist]
+include = ["engine", "templates", "tools", "data", "examples", "tests", "Makefile", "README.md"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "engine/py.typed" = "engine/py.typed"
