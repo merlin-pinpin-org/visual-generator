@@ -11,10 +11,10 @@ Sub-commands mirror the module CLIs (``vg-render``, ``vg-ocr-check``)::
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 
 from engine.art import PROVIDERS
+from engine.i18n import load as load_data
 from engine.render import list_templates
 
 
@@ -22,8 +22,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(prog="vg", description="Visual generator CLI")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    p_render = sub.add_parser("render", help="render a JSON visual")
+    p_render = sub.add_parser("render", help="render a JSON visual or card definition")
     p_render.add_argument("--data", required=True)
+    p_render.add_argument("--locale", default=None,
+                          help="locale (required for card definitions, e.g. en/fr)")
     p_render.add_argument("--out", default=None)
     p_render.add_argument("--font-dir", default=None)
 
@@ -38,8 +40,7 @@ def main() -> None:
     if args.cmd == "render":
         from engine.render import render_visual
 
-        with open(args.data, encoding="utf-8") as fh:
-            data = json.load(fh)
+        data = load_data(args.data, args.locale)
         render_visual(data, args.font_dir, args.out)
     elif args.cmd == "check":
         from tools.ocr_check import main as check_main

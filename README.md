@@ -19,9 +19,13 @@ consuming project.
 
 ### TCG card (`card_tcg`)
 
-![TCG card — Ambush](examples/card_ambush.jpg)
+![TCG card — Ambush / Embuscade](examples/fr/card_ambush.jpg)
 
-Cost is drawn as repeated gear icons (Magic-style currency icons).
+Cost is drawn as gold coins. Cards are **localizable**: one card
+definition carries the locale-independent properties (cost, art,
+footer) and a dict of per-locale strings; `--locale` is required when
+rendering one. Examples ship in `en` and `fr`, and any new locale is
+just a new key in the `locales` dict — no code change.
 
 ### Match announcement (`match_announcement`)
 
@@ -78,7 +82,7 @@ correct text and prove it by OCR.
 ├── tools/ocr_check.py      ← OCR validation (fail-closed)
 ├── tools/make_demo_assets.py ← procedural demo art (no text, no model)
 ├── templates/              ← one layout module per visual kind
-│   ├── card_tcg.py           TCG card (fixed anatomy, gear-icon costs)
+│   ├── card_tcg.py           TCG card (fixed anatomy, gold-coin costs)
 │   ├── match_announcement.py Discord-sized X-vs-Y banner
 │   ├── gallery.py           N-items grid with captions
 │   ├── world_map.py         annotated map (geo-placed region pins)
@@ -100,8 +104,8 @@ CLIs provided by the package:
 
 ```bash
 vg-demo-assets                                   # demo art -> examples/assets/
-vg render --data data/card_ambush.json           # render (or vg-render)
-vg check --data data/card_ambush.json           # validate (or vg-ocr-check)
+vg render --data data/card_ambush.json --locale fr   # render (or vg-render)
+vg check --data data/card_ambush.json --locale fr   # validate (or vg-ocr-check)
 vg templates                                    # list template names
 vg providers                                    # list art providers
 ```

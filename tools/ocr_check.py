@@ -17,7 +17,6 @@ string is missing — fail-closed.
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import subprocess
 import sys
@@ -62,8 +61,12 @@ def ocr(path: str) -> str:
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--data", required=True)
+    p.add_argument("--locale", default=None,
+                   help="locale (required for card definitions, e.g. en/fr)")
     args = p.parse_args()
-    data = json.load(open(args.data, encoding="utf-8"))
+    from engine.i18n import load as load_data
+
+    data = load_data(args.data, args.locale)
     expected = collect_strings(data.get("sections", {}))
     raw = ocr(data["output"])
     if raw is None:

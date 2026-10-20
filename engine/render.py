@@ -25,7 +25,6 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
-import json
 import os
 import sys
 
@@ -151,6 +150,8 @@ def render_visual(data: dict, font_dir: str | None = None, out: str | None = Non
 def main() -> None:
     parser = argparse.ArgumentParser(description="Render a JSON visual with a template")
     parser.add_argument("--data", required=True, help="JSON visual definition")
+    parser.add_argument("--locale", default=None,
+                         help="locale (required for card definitions, e.g. en/fr)")
     parser.add_argument("--out", default=None, help="override the JSON output path")
     parser.add_argument("--font-dir", default=None, help="DejaVu Serif directory (auto-detected)")
     parser.add_argument("--list-templates", action="store_true",
@@ -162,8 +163,9 @@ def main() -> None:
             print(name)
         return
 
-    with open(args.data, encoding="utf-8") as fh:
-        data = json.load(fh)
+    from engine.i18n import load as load_data
+
+    data = load_data(args.data, args.locale)
 
     render_visual(data, args.font_dir, args.out)
 

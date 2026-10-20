@@ -60,21 +60,65 @@ def test_unknown_template_fails_closed(tmp_path):
     assert "unknown template" in (r.stdout + r.stderr)
 
 
+def test_i18n_card_definition(tmp_path):
+    from engine.i18n import resolve_locale
+
+    card = json.load(open(os.path.join(DATA_DIR, "card_ambush.json"), encoding="utf-8"))
+    fr = resolve_locale(card, "fr")
+    assert fr["sections"]["name"] == "Embuscade"
+    assert fr["output"] == "examples/fr/card_ambush.jpg"
+    assert fr["sections"]["cost"] == 2  # property, not translated
+    en = resolve_locale(card, "en")
+    assert en["sections"]["name"] == "Ambush"
+
+
+def test_i18n_locale_required(tmp_path):
+    import pytest
+
+    from engine.i18n import resolve_locale
+
+    card = json.load(open(os.path.join(DATA_DIR, "card_ambush.json"), encoding="utf-8"))
+    with pytest.raises(SystemExit):
+        resolve_locale(card, None)
+    with pytest.raises(SystemExit):
+        resolve_locale(card, "de")
+
+
+def test_i18n_extensible(tmp_path):
+    from engine.i18n import resolve_locale
+
+    card = json.load(open(os.path.join(DATA_DIR, "card_ambush.json"), encoding="utf-8"))
+    card["locales"]["es"] = {"name": "Emboscada", "type_line": "x", "rule": "y"}
+    es = resolve_locale(card, "es")
+    assert es["sections"]["name"] == "Emboscada"
+    assert es["output"] == "examples/es/card_ambush.jpg"
+
+
+def test_render_requires_locale_for_card_definitions(tmp_path):
+    bad = subprocess.run(
+        [sys.executable, os.path.join(REPO, "engine", "render.py"),
+         "--data", os.path.join(DATA_DIR, "card_ambush.json")],
+        capture_output=True, text=True)
+    assert bad.returncode != 0
+    assert "locale required" in (bad.stdout + bad.stderr)
+
+
 def test_examples_render_and_check():
     data_files = sorted(f for f in os.listdir(DATA_DIR) if f.endswith(".json"))
     assert data_files, "no example data files found"
     for name in data_files:
         path = os.path.join(DATA_DIR, name)
         data = json.load(open(path, encoding="utf-8"))
-        assert os.path.isfile(os.path.join(REPO, data["output"])), \
-            (name, "art/output asset missing")
-        r = subprocess.run(
-            [sys.executable, os.path.join(REPO, "engine", "render.py"),
-             "--data", path],
-            capture_output=True, text=True)
-        assert r.returncode == 0, (name, r.stderr)
-        check = subprocess.run(
-            [sys.executable, os.path.join(REPO, "tools", "ocr_check.py"),
-             "--data", path],
-            capture_output=True, text=True)
-        assert check.returncode == 0, (name, check.stdout, check.stderr)
+        locales = sorted(data["locales"]) if "locales" in data else [None]
+        for loc in locales:
+            cmd = [sys.executable, os.path.join(REPO, "engine", "render.py"),
+                   "--data", path]
+            check_cmd = [sys.executable, os.path.join(REPO, "tools", "ocr_check.py"),
+                         "--data", path]
+            if loc:
+                cmd += ["--locale", loc]
+                check_cmd += ["--locale", loc]
+            r = subprocess.run(cmd, capture_output=True, text=True)
+            assert r.returncode == 0, (name, loc, r.stderr)
+            check = subprocess.run(check_cmd, capture_output=True, text=True)
+            assert check.returncode == 0, (name, loc, check.stdout, check.stderr)

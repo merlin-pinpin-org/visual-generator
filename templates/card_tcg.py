@@ -23,7 +23,7 @@ JSON schema::
       "canvas": {"width": 744, "height": 1032},   # optional
       "sections": {
         "name": "Embuscade",
-        "cost": 2,                    # int: drawn as N gear icons (Magic-style)
+        "cost": 2,                    # int: drawn as N gold coins
         "art": "path/to/art.jpg",           # full-bleed art, no text
         "type_line": "Action spéciale — Technologie",
         "rule": "Sentence one.\nSentence two.",   # \n = paragraph break
@@ -147,20 +147,15 @@ def art_with_fade(art, w, h, fade=18, frame_rgb=None):
     return Image.composite(base, Image.new("RGB", (w, h), frame_rgb), mask)
 
 
-def draw_gear(d, cx, cy, r):
-    """Vector gear icon (tech currency): gold disc, dark teeth + hub."""
-    import math
-    teeth = 8
-    pts = []
-    for i in range(teeth * 2):
-        ang = i * math.pi / teeth
-        rad = r if i % 2 == 0 else r * 1.35
-        pts.append((cx + rad * math.cos(ang), cy + rad * math.sin(ang)))
-    d.polygon(pts, fill=(60, 50, 30))
-    d.ellipse([cx - r, cy - r, cx + r, cy + r],
-              fill=(218, 193, 121), outline=(120, 96, 52), width=2)
-    d.ellipse([cx - r * 0.38, cy - r * 0.38, cx + r * 0.38, cy + r * 0.38],
-              fill=(52, 40, 24))
+def draw_coin(d, cx, cy, r):
+    """Vector gold coin (currency icon): shaded disc, rim, embossed star."""
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(196, 158, 80),
+              outline=(110, 86, 42), width=2)
+    d.ellipse([cx - r * 0.82, cy - r * 0.82, cx + r * 0.82, cy + r * 0.82],
+              fill=(224, 190, 110), outline=(150, 118, 58), width=2)
+    d.regular_polygon((cx, cy, r * 0.34), 5, rotation=-90, fill=(255, 228, 160))
+    d.ellipse([cx - r * 0.18, cy - r * 0.18, cx - r * 0.02, cy - r * 0.02],
+              fill=(255, 240, 200))
 
 
 def hex_to_rgb(value: str):
@@ -211,7 +206,7 @@ def render(data, fonts):
             gs = 34
             x0 = cw - 60 - cost * (gs + 6)
             for k in range(cost):
-                draw_gear(d, x0 + k * (gs + 6) + gs // 2, cy, gs // 2)
+                draw_coin(d, x0 + k * (gs + 6) + gs // 2, cy, gs // 2)
 
     win_w = cw - 88
     win_h = art_b - name_b - 18

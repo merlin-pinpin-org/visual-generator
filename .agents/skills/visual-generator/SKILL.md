@@ -83,8 +83,8 @@ bundle). Fonts auto-locate DejaVu Serif; `--font-dir` overrides.
 
 - `card_tcg` — TCG card. Fixed anatomy (name banner / art window /
   type line / rule box / extra box / footer as fixed canvas fractions
-  — the art never shifts text zones). `cost`: int = N gear icons
-  (repeated currency icons), string = round text badge (e.g. "T").
+  — the art never shifts text zones). `cost`: int = N gold coins,
+  string = round text badge (e.g. "T").
   Optional `extra_label`/`extra_value` box (linked value). `palette`
   accepts hex overrides of any documented palette key.
 - `contact_sheet` — N card visuals re-rendered side by side on a
@@ -109,6 +109,15 @@ bundle). Fonts auto-locate DejaVu Serif; `--font-dir` overrides.
 New template? Copy an existing one, keep the contract: `render(data,
 fonts)` + `DEFAULT_PALETTE`, document the JSON schema in the
 docstring, ship a `data/` example and validate it by OCR.
+
+## Localization (card definitions)
+
+A visual JSON that carries a top-level `locales` key is a **card
+definition**: `properties` holds the locale-independent data (cost,
+art, footer), `locales` maps each locale to its strings, `output`
+carries a `{locale}` placeholder. Rendering/checking requires
+`--locale` (fail-closed otherwise). Adding a locale = adding a key,
+no code change. Examples ship in `en` and `fr`.
 
 ## Known pitfalls (all learned the hard way)
 
