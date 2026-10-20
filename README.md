@@ -40,19 +40,11 @@ medallion.
 
 Regions pinned on the map art at their geographic positions.
 
-### Info card (`info_card`)
+### Entity card (`entity_card`)
 
-![Info card — France](examples/info_card_france.jpg)
-
-One image, tag chips, structured label/value columns — the profile /
-civilization / player card case.
-
-### Media card (`media_card`)
-
-![Media card — map](examples/media_card_map.jpg)
-
-Image strip (up to 4), tags, facts line, synthesized description —
-the map / media-heavy post case.
+One entity's sheet, collector-card style: name banner + badge, art
+window over a translucent backdrop, parchment plates for the content,
+optional linked-value box — the civilization / map / player card case.
 
 ### Parchment rules poster (`parchment_poster`)
 
@@ -91,8 +83,7 @@ correct text and prove it by OCR.
 │   ├── gallery.py           N-items grid with captions
 │   ├── world_map.py         annotated map (geo-placed region pins)
 │   ├── parchment_poster.py  rules poster on a parchment texture
-│   ├── info_card.py         one image + dense info columns (profiles)
-│   └── media_card.py        image strip + tags + description (maps)
+│   └── entity_card.py       one entity's sheet (civ/map/player)
 ├── data/                   ← JSON examples (source of truth per visual)
 └── examples/               ← rendered outputs + their assets
 ```
