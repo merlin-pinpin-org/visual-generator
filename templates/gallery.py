@@ -11,7 +11,7 @@ JSON schema::
       "template": "gallery",
       "output": "examples/gallery.jpg",
       "sections": {
-        "title": "KINGDOMS — Territoires à civilisation",
+        "title": "DEMO GAME — Territories",
         "item_width": 400, "item_height": 500,
         "columns": 4, "gap": 24,
         "items": [

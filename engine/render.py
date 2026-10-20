@@ -105,6 +105,8 @@ def render_visual(data: dict, font_dir: str | None = None, out: str | None = Non
     img = module.render(data, fonts)
     dest = data["output"]
     os.makedirs(os.path.dirname(os.path.abspath(dest)), exist_ok=True)
+    if img.mode == "RGBA" and not dest.lower().endswith(".png"):
+        img = img.convert("RGB")  # JPEG: flatten translucent plates onto the backdrop
     img.save(dest, quality=93)
     print("ok", dest)
     return dest
