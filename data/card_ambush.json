@@ -1,13 +1,27 @@
 {
   "template": "card_tcg",
-  "output": "examples/card_ambush.jpg",
-  "sections": {
-    "name": "Ambush",
+  "output": "examples/{locale}/card_ambush.jpg",
+  "properties": {
     "cost": 2,
     "art": "examples/assets/card_art_ambush.jpg",
-    "type_line": "Special action — Technology",
-    "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+    "backdrop": "examples/assets/card_backdrop.jpg",
     "footer_left": "1/10",
     "footer_right": "Demo Game"
+  },
+  "locales": {
+    "en": {
+      "name": "Ambush",
+      "type_line": "Special action — Technology",
+      "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+      "extra_label": "Requires:",
+      "extra_value": "Celts"
+    },
+    "fr": {
+      "name": "Embuscade",
+      "type_line": "Action spéciale — Technologie",
+      "rule": "Une attaque supplémentaire ce cycle.\nLe défenseur ne dépense pas de point de défense lorsqu'il se porte volontaire.",
+      "extra_label": "Requiert :",
+      "extra_value": "Celtes"
+    }
   }
 }

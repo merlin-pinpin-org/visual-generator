@@ -1,76 +1,149 @@
 {
   "template": "contact_sheet",
-  "output": "examples/sheet_ambush.jpg",
-  "sections": {
-    "title": "DEMO GAME — Technologies",
-    "columns": 5,
-    "card_template": "card_tcg",
-    "cards": [
-      {
-        "template": "card_tcg",
-        "output": "examples/card_ambush.jpg",
-        "sections": {
-          "name": "Ambush",
-          "cost": 2,
-          "art": "examples/assets/card_art_ambush.jpg",
-          "type_line": "Special action — Technology",
-          "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
-          "footer_left": "1/10",
-          "footer_right": "Demo Game"
+  "output": "examples/{locale}/sheet_ambush.jpg",
+  "properties": {
+    "columns": 5
+  },
+  "locales": {
+    "en": {
+      "title": "DEMO GAME — Technologies",
+      "cards": [
+        {
+          "template": "card_tcg",
+          "output": "examples/en/card_ambush.jpg",
+          "sections": {
+            "name": "Ambush",
+            "cost": 2,
+            "art": "examples/assets/card_art_ambush.jpg",
+            "type_line": "Special action — Technology",
+            "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+            "footer_left": "1/10",
+            "footer_right": "Demo Game"
+          }
+        },
+        {
+          "template": "card_tcg",
+          "output": "examples/en/card_ambush.jpg",
+          "sections": {
+            "name": "Ambush",
+            "cost": 2,
+            "art": "examples/assets/card_art_ambush.jpg",
+            "type_line": "Special action — Technology",
+            "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+            "footer_left": "2/10",
+            "footer_right": "Demo Game"
+          }
+        },
+        {
+          "template": "card_tcg",
+          "output": "examples/en/card_ambush.jpg",
+          "sections": {
+            "name": "Ambush",
+            "cost": 2,
+            "art": "examples/assets/card_art_ambush.jpg",
+            "type_line": "Special action — Technology",
+            "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+            "footer_left": "3/10",
+            "footer_right": "Demo Game"
+          }
+        },
+        {
+          "template": "card_tcg",
+          "output": "examples/en/card_ambush.jpg",
+          "sections": {
+            "name": "Ambush",
+            "cost": 2,
+            "art": "examples/assets/card_art_ambush.jpg",
+            "type_line": "Special action — Technology",
+            "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+            "footer_left": "4/10",
+            "footer_right": "Demo Game"
+          }
+        },
+        {
+          "template": "card_tcg",
+          "output": "examples/en/card_ambush.jpg",
+          "sections": {
+            "name": "Ambush",
+            "cost": 2,
+            "art": "examples/assets/card_art_ambush.jpg",
+            "type_line": "Special action — Technology",
+            "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
+            "footer_left": "5/10",
+            "footer_right": "Demo Game"
+          }
         }
-      },
-      {
-        "template": "card_tcg",
-        "output": "examples/card_ambush.jpg",
-        "sections": {
-          "name": "Ambush",
-          "cost": 2,
-          "art": "examples/assets/card_art_ambush.jpg",
-          "type_line": "Special action — Technology",
-          "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
-          "footer_left": "1/10",
-          "footer_right": "Demo Game"
+      ]
+    },
+    "fr": {
+      "title": "DEMO GAME — Technologies",
+      "cards": [
+        {
+          "template": "card_tcg",
+          "output": "examples/fr/card_ambush.jpg",
+          "sections": {
+            "name": "Embuscade",
+            "cost": 2,
+            "art": "examples/assets/card_art_ambush.jpg",
+            "type_line": "Action spéciale — Technologie",
+            "rule": "Une attaque supplémentaire ce cycle.\nLe défenseur ne dépense pas de point de défense lorsqu'il se porte volontaire.",
+            "footer_left": "1/10",
+            "footer_right": "Demo Game"
+          }
+        },
+        {
+          "template": "card_tcg",
+          "output": "examples/fr/card_ambush.jpg",
+          "sections": {
+            "name": "Embuscade",
+            "cost": 2,
+            "art": "examples/assets/card_art_ambush.jpg",
+            "type_line": "Action spéciale — Technologie",
+            "rule": "Une attaque supplémentaire ce cycle.\nLe défenseur ne dépense pas de point de défense lorsqu'il se porte volontaire.",
+            "footer_left": "2/10",
+            "footer_right": "Demo Game"
+          }
+        },
+        {
+          "template": "card_tcg",
+          "output": "examples/fr/card_ambush.jpg",
+          "sections": {
+            "name": "Embuscade",
+            "cost": 2,
+            "art": "examples/assets/card_art_ambush.jpg",
+            "type_line": "Action spéciale — Technologie",
+            "rule": "Une attaque supplémentaire ce cycle.\nLe défenseur ne dépense pas de point de défense lorsqu'il se porte volontaire.",
+            "footer_left": "3/10",
+            "footer_right": "Demo Game"
+          }
+        },
+        {
+          "template": "card_tcg",
+          "output": "examples/fr/card_ambush.jpg",
+          "sections": {
+            "name": "Embuscade",
+            "cost": 2,
+            "art": "examples/assets/card_art_ambush.jpg",
+            "type_line": "Action spéciale — Technologie",
+            "rule": "Une attaque supplémentaire ce cycle.\nLe défenseur ne dépense pas de point de défense lorsqu'il se porte volontaire.",
+            "footer_left": "4/10",
+            "footer_right": "Demo Game"
+          }
+        },
+        {
+          "template": "card_tcg",
+          "output": "examples/fr/card_ambush.jpg",
+          "sections": {
+            "name": "Embuscade",
+            "cost": 2,
+            "art": "examples/assets/card_art_ambush.jpg",
+            "type_line": "Action spéciale — Technologie",
+            "rule": "Une attaque supplémentaire ce cycle.\nLe défenseur ne dépense pas de point de défense lorsqu'il se porte volontaire.",
+            "footer_left": "5/10",
+            "footer_right": "Demo Game"
+          }
         }
-      },
-      {
-        "template": "card_tcg",
-        "output": "examples/card_ambush.jpg",
-        "sections": {
-          "name": "Ambush",
-          "cost": 2,
-          "art": "examples/assets/card_art_ambush.jpg",
-          "type_line": "Special action — Technology",
-          "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
-          "footer_left": "1/10",
-          "footer_right": "Demo Game"
-        }
-      },
-      {
-        "template": "card_tcg",
-        "output": "examples/card_ambush.jpg",
-        "sections": {
-          "name": "Ambush",
-          "cost": 2,
-          "art": "examples/assets/card_art_ambush.jpg",
-          "type_line": "Special action — Technology",
-          "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
-          "footer_left": "1/10",
-          "footer_right": "Demo Game"
-        }
-      },
-      {
-        "template": "card_tcg",
-        "output": "examples/card_ambush.jpg",
-        "sections": {
-          "name": "Ambush",
-          "cost": 2,
-          "art": "examples/assets/card_art_ambush.jpg",
-          "type_line": "Special action — Technology",
-          "rule": "One extra attack this cycle.\nThe defender spends no defense point when volunteering.",
-          "footer_left": "1/10",
-          "footer_right": "Demo Game"
-        }
-      }
-    ]
+      ]
+    }
   }
 }

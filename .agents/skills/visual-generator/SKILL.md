@@ -19,15 +19,24 @@ by OCR. Never "save time" by asking the image model to write words.
 
 ## Install
 
-The library is pip/uv-installable and exposes three CLIs:
+The library is pip/uv-installable and exposes a grouped `vg` CLI plus
+the legacy per-command aliases:
 
 ```bash
 uv pip install visual-generator        # or: pip install visual-generator
 ```
 
-- `vg-render --data <visual.json>` — render one visual
-- `vg-ocr-check --data <visual.json>` — fail-closed OCR validation
+- `vg render --data <visual.json>` (alias `vg-render`) — render
+- `vg check --data <visual.json>` (alias `vg-ocr-check`) — fail-closed
+  OCR validation
+- `vg templates` — list template names (built-ins + plugins)
+- `vg providers` — list art providers (`solid` placeholder works
+  without any API key; real providers are the consuming project's)
 - `vg-demo-assets` — regenerate the demo art into `examples/assets/`
+
+Third-party template plugins ship via the `visual_generator.templates`
+entry-point group; art providers subclass `engine.art.ArtProvider`
+(entry-point group `visual_generator.art_providers`).
 
 In a project managed by uv, add the dependency and sync:
 
@@ -74,8 +83,8 @@ bundle). Fonts auto-locate DejaVu Serif; `--font-dir` overrides.
 
 - `card_tcg` — TCG card. Fixed anatomy (name banner / art window /
   type line / rule box / extra box / footer as fixed canvas fractions
-  — the art never shifts text zones). `cost`: int = N gear icons
-  (repeated currency icons), string = round text badge (e.g. "T").
+  — the art never shifts text zones). `cost`: int = N gold coins,
+  string = round text badge (e.g. "T").
   Optional `extra_label`/`extra_value` box (linked value). `palette`
   accepts hex overrides of any documented palette key.
 - `contact_sheet` — N card visuals re-rendered side by side on a
@@ -100,6 +109,15 @@ bundle). Fonts auto-locate DejaVu Serif; `--font-dir` overrides.
 New template? Copy an existing one, keep the contract: `render(data,
 fonts)` + `DEFAULT_PALETTE`, document the JSON schema in the
 docstring, ship a `data/` example and validate it by OCR.
+
+## Localization (card definitions)
+
+A visual JSON that carries a top-level `locales` key is a **card
+definition**: `properties` holds the locale-independent data (cost,
+art, footer), `locales` maps each locale to its strings, `output`
+carries a `{locale}` placeholder. Rendering/checking requires
+`--locale` (fail-closed otherwise). Adding a locale = adding a key,
+no code change. Examples ship in `en` and `fr`.
 
 ## Known pitfalls (all learned the hard way)
 

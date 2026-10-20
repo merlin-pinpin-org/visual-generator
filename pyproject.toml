@@ -4,14 +4,39 @@ version = "0.1.0"
 description = "Data-driven visual generator: JSON + template + art + text sections, OCR-verifiable"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "merlin-pinpin-org" }]
+keywords = ["visual", "generator", "tcg", "cards", "games", "pillow", "ocr"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Games/Entertainment",
+    "Typing :: Typed",
+]
 dependencies = ["pillow>=10.0.0", "matplotlib>=3.7.0"]
 
+[project.urls]
+Homepage = "https://github.com/merlin-pinpin-org/visual-generator"
+Repository = "https://github.com/merlin-pinpin-org/visual-generator"
+Issues = "https://github.com/merlin-pinpin-org/visual-generator/issues"
+Changelog = "https://github.com/merlin-pinpin-org/visual-generator/releases"
+
 [project.scripts]
+vg = "engine.cli:main"
 vg-render = "engine.render:main"
 vg-ocr-check = "tools.ocr_check:main"
 vg-demo-assets = "tools.make_demo_assets:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "build", "twine", "ruff"]
 
 [build-system]
 requires = ["hatchling"]
@@ -20,8 +45,15 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["engine", "templates", "tools"]
 
-[tool.hatch.build.targets.wheel.force-include]
-"engine/py.typed" = "engine/py.typed"
+[tool.hatch.build.targets.sdist]
+include = ["engine", "templates", "tools", "data", "examples", "tests", "Makefile", "README.md", "LICENSE"]
 
-[tool.hatch.build]
-exclude = ["examples", "data", ".agents"]
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"templates/*.py" = ["F821"]  # resolve_palette is injected by the engine (documented contract)

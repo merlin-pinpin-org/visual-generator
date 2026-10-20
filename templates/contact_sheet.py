@@ -33,7 +33,8 @@ import os
 
 from PIL import Image, ImageDraw, ImageFont
 
-TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "templates")
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMPLATE_DIR = os.path.join(_ROOT, "templates")
 
 DEFAULT_PALETTE = {
     "bg": (24, 20, 16), "title_txt": (218, 193, 121),

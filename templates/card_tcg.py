@@ -23,7 +23,9 @@ JSON schema::
       "canvas": {"width": 744, "height": 1032},   # optional
       "sections": {
         "name": "Embuscade",
-        "cost": 2,                    # int: drawn as N gear icons (Magic-style)
+        "cost": 2,                    # int: drawn as N gold coins
+        "backdrop": "path/to/texture.jpg",      # optional: decorative background,
+        #                                           veiled 72% toward bg (stays subtle)
         "art": "path/to/art.jpg",           # full-bleed art, no text
         "type_line": "Action spéciale — Technologie",
         "rule": "Sentence one.\nSentence two.",   # \n = paragraph break
@@ -36,7 +38,7 @@ JSON schema::
 """
 from __future__ import annotations
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 DEFAULT_PALETTE = {
     "bg": (40, 32, 22), "band": (52, 40, 24), "gold": (176, 141, 74),
@@ -79,27 +81,106 @@ def crop_to(art, w, h):
     return big.crop((x, y, x + w, y + h))
 
 
-def draw_gear(d, cx, cy, r):
-    """Vector gear icon (tech currency): gold disc, dark teeth + hub."""
+def dominant_color(art):
+    """Average color of the art, slightly saturated — the card's accent."""
+    small = art.resize((32, 32))
+    px = list(small.getdata())
+    r = sum(p[0] for p in px) // len(px)
+    g = sum(p[1] for p in px) // len(px)
+    b = sum(p[2] for p in px) // len(px)
+    return (r, g, b)
+
+
+def tint_toward(color, accent, factor):
+    """Blend a palette color toward the art accent (0 = untouched)."""
+    return tuple(int(c + (a - c) * factor) for c, a in zip(color, accent))
+
+
+def hue_shift(color, accent, factor):
+    """Rotate a color's hue toward the accent's hue, keeping its own
+    saturation and value (a gold frame becomes a cool steel blue frame
+    under blue art, without going grey).
+    """
+    import colorsys
+
+    r, g, b = (c / 255 for c in color)
+    ar, ag, ab = (a / 255 for a in accent)
+    h, s, v = colorsys.rgb_to_hsv(r, g, b)
+    ah, as_, av = colorsys.rgb_to_hsv(ar, ag, ab)
+    if as_ < 0.12:
+        return color
+    delta = (ah - h + 0.5) % 1.0 - 0.5
+    h = (h + delta * factor) % 1.0
+    s = min(1.0, s * (1.0 + 0.25 * factor))
+    return tuple(round(c * 255) for c in colorsys.hsv_to_rgb(h, s, v))
+
+
+def harmonize_palette(pal, accent):
+    """Harmonize frame/banner colors with the art.
+
+    Text-critical zones (rule box, ink, text_light) stay untouched:
+    OCR contrast is never degraded. Only frame, banner and footer colors
+    shift toward the art's hue; the JSON palette always wins over the
+    automatic harmonization (explicit overrides are applied after).
+    """
+    for key, factor in (("gold", 0.45), ("gold2", 0.55), ("band", 0.50),
+                        ("footer", 0.40), ("bg", 0.35)):
+        pal[key] = hue_shift(pal[key], accent, factor)
+    return pal
+
+
+def art_with_fade(art, w, h, fade=18, frame_rgb=None):
+    """Art window with a soft fade: edges dissolve into the frame color
+    instead of a hard cut (the art melts into the card, not taped on).
+    A mild inner vignette darkens the corners so the window gains depth
+    without shifting any zone (the window keeps its exact size)."""
     import math
-    teeth = 8
-    pts = []
-    for i in range(teeth * 2):
-        ang = i * math.pi / teeth
-        rad = r if i % 2 == 0 else r * 1.35
-        pts.append((cx + rad * math.cos(ang), cy + rad * math.sin(ang)))
-    d.polygon(pts, fill=(60, 50, 30))
-    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(218, 193, 121), outline=(120, 96, 52), width=2)
-    d.ellipse([cx - r * 0.38, cy - r * 0.38, cx + r * 0.38, cy + r * 0.38],
-              fill=(52, 40, 24))
+
+    base = crop_to(art, w, h).convert("RGB")
+    frame_rgb = frame_rgb or DEFAULT_PALETTE["bg"]
+    fade_px = max(1, fade)
+    cx, cy = (w - 1) / 2.0, (h - 1) / 2.0
+    mask = Image.new("L", (w, h))
+    mask.putdata([
+        round(255 * max(0, min(1, min(x, w - 1 - x, y, h - 1 - y) / fade_px))
+              * (1.0 - 0.16 * min(1.0, math.hypot((x - cx) / cx, (y - cy) / cy)) ** 2))
+        for y in range(h) for x in range(w)
+    ])
+    return Image.composite(base, Image.new("RGB", (w, h), frame_rgb), mask)
+
+
+def draw_coin(d, cx, cy, r):
+    """Vector gold coin (currency icon): shaded disc, rim, embossed star."""
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(196, 158, 80),
+              outline=(110, 86, 42), width=2)
+    d.ellipse([cx - r * 0.82, cy - r * 0.82, cx + r * 0.82, cy + r * 0.82],
+              fill=(224, 190, 110), outline=(150, 118, 58), width=2)
+    d.regular_polygon((cx, cy, r * 0.34), 5, rotation=-90, fill=(255, 228, 160))
+    d.ellipse([cx - r * 0.18, cy - r * 0.18, cx - r * 0.02, cy - r * 0.02],
+              fill=(255, 240, 200))
+
+
+def hex_to_rgb(value: str):
+    value = value.lstrip("#")
+    return tuple(int(value[i:i + 2], 16) for i in (0, 2, 4))
 
 
 def render(data, fonts):
     sec = data["sections"]
-    pal = resolve_palette(DEFAULT_PALETTE, data.get("palette"))
+    pal = dict(DEFAULT_PALETTE)
+    art = Image.open(sec["art"]).convert("RGB")
+    harmonize_palette(pal, dominant_color(art))
+    overrides = data.get("palette") or {}
+    for k, v in overrides.items():
+        pal[k] = hex_to_rgb(v) if isinstance(v, str) else tuple(v)
     cw = data.get("canvas", {}).get("width", 744)
     ch = data.get("canvas", {}).get("height", 1032)
-    c = Image.new("RGB", (cw, ch), pal["bg"])
+    base = Image.new("RGB", (cw, ch), pal["bg"])
+    if data.get("backdrop"):
+        bd = crop_to(Image.open(data["backdrop"]).convert("RGB"), cw, ch)
+        bd = bd.filter(ImageFilter.GaussianBlur(2))
+        base = Image.blend(bd, base, 0.30)  # veiled: decorative, never noise
+    c = base.convert("RGBA")
     d = ImageDraw.Draw(c)
 
     name_b = int(ch * F_NAME)
@@ -132,12 +213,11 @@ def render(data, fonts):
             gs = 34
             x0 = cw - 60 - cost * (gs + 6)
             for k in range(cost):
-                draw_gear(d, x0 + k * (gs + 6) + gs // 2, cy, gs // 2)
+                draw_coin(d, x0 + k * (gs + 6) + gs // 2, cy, gs // 2)
 
-    art = Image.open(sec["art"]).convert("RGB")
     win_w = cw - 88
     win_h = art_b - name_b - 18
-    c.paste(crop_to(art, win_w, win_h), (44, name_b + 4))
+    c.paste(art_with_fade(art, win_w, win_h, frame_rgb=pal["bg"]), (44, name_b + 4))
     d.rectangle([44, name_b + 4, 44 + win_w - 1, name_b + 4 + win_h - 1],
                 outline=pal["gold2"], width=3)
 
@@ -163,15 +243,25 @@ def render(data, fonts):
         y += 8
 
     if has_extra:
-        d.rounded_rectangle([MARGIN_X, r_bottom + 10, cw - MARGIN_X - 1, extra_b], radius=14,
-                            fill=pal["band"], outline=pal["gold"], width=3)
+        plate = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+        pd = ImageDraw.Draw(plate)
+        pd.rounded_rectangle([MARGIN_X, r_bottom + 10, cw - MARGIN_X - 1, extra_b], radius=14,
+                             fill=tuple(pal["band"]) + (216,),
+                             outline=pal["gold"] + (255,), width=3)
+        c.alpha_composite(plate)
+        d = ImageDraw.Draw(c)
         d.text((cw // 2, (r_bottom + 10 + extra_b) // 2 - 16), sec["extra_label"],
                font=ImageFont.truetype(fonts["r"], 26), fill=pal["subtitle"], anchor="mm")
         d.text((cw // 2, (r_bottom + 10 + extra_b) // 2 + 18), sec["extra_value"],
                font=ImageFont.truetype(fonts["b"], 32), fill=pal["text_light"], anchor="mm")
 
     foot_t = extra_b + 8
-    d.rectangle([26, foot_t, cw - 27, ch - 27], fill=pal["footer"], outline=pal["gold"], width=3)
+    plate = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+    pd = ImageDraw.Draw(plate)
+    pd.rectangle([26, foot_t, cw - 27, ch - 27],
+                 fill=tuple(pal["footer"]) + (216,), outline=pal["gold"] + (255,), width=3)
+    c.alpha_composite(plate)
+    d = ImageDraw.Draw(c)
     ff = ImageFont.truetype(fonts["r"], 24)
     d.text((48, (foot_t + ch - 27) // 2), sec.get("footer_left", ""), font=ff,
            fill=pal["footer_txt"], anchor="lm")

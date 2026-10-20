@@ -25,16 +25,17 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
-import json
 import os
 import sys
 
 try:
-    from PIL import Image, ImageDraw, ImageFont
+    from PIL import Image, ImageFont  # noqa: F401  (availability guard)
 except ImportError:
     sys.exit("Pillow is required: pip install pillow")
 
-TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "templates")
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMPLATE_DIR = os.path.join(_ROOT, "templates")
+TEMPLATE_EP_GROUP = "visual_generator.templates"
 
 
 def load_fonts(font_dir: str | None = None) -> dict:
@@ -51,8 +52,8 @@ def load_fonts(font_dir: str | None = None) -> dict:
     except ImportError:
         pass
     candidates += [
-        os.path.expanduser("~/.local/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf"),
         "/usr/share/fonts/truetype/dejavu",
+        "/usr/local/share/fonts/truetype/dejavu",
     ]
     for d in candidates:
         if os.path.isfile(os.path.join(d, "DejaVuSerif-Bold.ttf")):
@@ -78,16 +79,50 @@ def resolve_palette(base: dict, overrides: dict | None) -> dict:
 
 
 def import_template(name: str):
-    """Load templates/<name>.py; fail-closed when absent or invalid."""
+    """Load a template: built-in ``templates/<name>.py`` first, then
+    the ``visual_generator.templates`` entry-point group (third-party
+    plugin templates). Fail-closed when absent or invalid."""
     path = os.path.join(TEMPLATE_DIR, f"{name}.py")
-    if not os.path.isfile(path):
-        sys.exit(f"unknown template: {name!r} (expected {path})")
-    spec = importlib.util.spec_from_file_location(f"template_{name}", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    if os.path.isfile(path):
+        spec = importlib.util.spec_from_file_location(f"template_{name}", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+    else:
+        module = None
+        try:
+            import importlib.metadata as md
+
+            eps = md.entry_points(group=TEMPLATE_EP_GROUP, name=name)
+        except Exception:
+            eps = []
+        for ep in eps:
+            try:
+                module = ep.load()
+            except Exception:
+                continue
+            break
+        if module is None:
+            sys.exit(f"unknown template: {name!r} "
+                     f"(expected {path} or an entry point in group {TEMPLATE_EP_GROUP!r})")
     if not hasattr(module, "render"):
         sys.exit(f"template {name!r} has no render(data, fonts) function")
     return module
+
+
+def list_templates() -> list[str]:
+    """Built-in template names + entry-point plugin template names."""
+    names = sorted(
+        f[:-3] for f in os.listdir(TEMPLATE_DIR)
+        if f.endswith(".py") and not f.startswith("_")
+    )
+    try:
+        import importlib.metadata as md
+
+        names += sorted(ep.name for ep in md.entry_points(group=TEMPLATE_EP_GROUP)
+                        if ep.name not in names)
+    except Exception:
+        pass
+    return names
 
 
 def render_visual(data: dict, font_dir: str | None = None, out: str | None = None) -> str:
@@ -115,12 +150,22 @@ def render_visual(data: dict, font_dir: str | None = None, out: str | None = Non
 def main() -> None:
     parser = argparse.ArgumentParser(description="Render a JSON visual with a template")
     parser.add_argument("--data", required=True, help="JSON visual definition")
+    parser.add_argument("--locale", default=None,
+                         help="locale (required for card definitions, e.g. en/fr)")
     parser.add_argument("--out", default=None, help="override the JSON output path")
     parser.add_argument("--font-dir", default=None, help="DejaVu Serif directory (auto-detected)")
+    parser.add_argument("--list-templates", action="store_true",
+                        help="list available template names and exit")
     args = parser.parse_args()
 
-    with open(args.data, encoding="utf-8") as fh:
-        data = json.load(fh)
+    if args.list_templates:
+        for name in list_templates():
+            print(name)
+        return
+
+    from engine.i18n import load as load_data
+
+    data = load_data(args.data, args.locale)
 
     render_visual(data, args.font_dir, args.out)
 

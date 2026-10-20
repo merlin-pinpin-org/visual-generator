@@ -19,9 +19,13 @@ consuming project.
 
 ### TCG card (`card_tcg`)
 
-![TCG card — Ambush](examples/card_ambush.jpg)
+![TCG card — Ambush / Embuscade](examples/fr/card_ambush.jpg)
 
-Cost is drawn as repeated gear icons (Magic-style currency icons).
+Cost is drawn as gold coins. Cards are **localizable**: one card
+definition carries the locale-independent properties (cost, art,
+footer) and a dict of per-locale strings; `--locale` is required when
+rendering one. Examples ship in `en` and `fr`, and any new locale is
+just a new key in the `locales` dict — no code change.
 
 ### Match announcement (`match_announcement`)
 
@@ -78,7 +82,7 @@ correct text and prove it by OCR.
 ├── tools/ocr_check.py      ← OCR validation (fail-closed)
 ├── tools/make_demo_assets.py ← procedural demo art (no text, no model)
 ├── templates/              ← one layout module per visual kind
-│   ├── card_tcg.py           TCG card (fixed anatomy, gear-icon costs)
+│   ├── card_tcg.py           TCG card (fixed anatomy, gold-coin costs)
 │   ├── match_announcement.py Discord-sized X-vs-Y banner
 │   ├── gallery.py           N-items grid with captions
 │   ├── world_map.py         annotated map (geo-placed region pins)
@@ -100,16 +104,34 @@ CLIs provided by the package:
 
 ```bash
 vg-demo-assets                                   # demo art -> examples/assets/
-vg-render --data data/card_ambush.json           # render
-vg-ocr-check --data data/card_ambush.json       # validate (fail-closed)
+vg render --data data/card_ambush.json --locale fr   # render (or vg-render)
+vg check --data data/card_ambush.json --locale fr   # validate (or vg-ocr-check)
+vg templates                                    # list template names
+vg providers                                    # list art providers
 ```
 
 From a repo checkout the module paths still work
 (`python engine/render.py --data …`, `python tools/ocr_check.py …`).
+`make render` / `make check` re-render and validate every `data/*.json`
+example; `make test` runs the end-to-end suite (pytest).
 
 The `template` key selects the layout module. Each template documents
 its JSON schema in its docstring; each `data/*.json` is a working
 example.
+
+## Plugins
+
+Templates are plugins: third-party packages can ship additional layout
+modules by declaring an entry point in the `visual_generator.templates`
+group (object: a module exposing `render(data, fonts)` +
+`DEFAULT_PALETTE`) — `import_template` resolves built-ins first, then
+entry points. `vg templates` lists them all.
+
+Art comes from an `ArtProvider` (`engine.art`): `generate(prompt,
+out_path, width, height) -> path`. The shipped `solid` placeholder works
+without any API key; real providers (Mistral, BFL…) belong to the
+consuming project — subclass `ArtProvider`, `register_provider(instance)`
+or expose a `visual_generator.art_providers` entry point.
 
 ## Principles
 
@@ -124,12 +146,27 @@ example.
    real game assets (crests, map thumbnails, civilization icons); the
    renderer places them, it never invents them.
 
+## Release
+
+Releases are tag-driven. CI (lint + tests + build) runs on every PR
+and push to `main`. To release:
+
+1. Make sure `main` is green.
+2. Tag manually: `git tag v0.1.0 && git push origin v0.1.0`.
+3. The `Release` workflow builds sdist + wheel, publishes a GitHub
+   Release with the artifacts and release notes, and publishes to PyPI
+   (trusted publisher or `PYPI_API_TOKEN` secret, `pypi` environment).
+
+The tag, the `pyproject.toml` version and the GitHub Release must
+always agree.
+
 ## Status
 
 Prototype, validated on a 10-card technology deck, a 48-card
 territory deck, a parchment rules poster and the five templates
-above, with project-agnostic data. Roadmap: extract a proper
-pip-installable library (see the issues) with a plugin API for
-templates and art providers.
+above, with project-agnostic data. Now a pip-installable library
+with plugin templates (entry points) and an `ArtProvider`
+abstraction; roadmap: publish to PyPI and wire it into the consuming
+games (see the issues).
 
 License: MIT.
