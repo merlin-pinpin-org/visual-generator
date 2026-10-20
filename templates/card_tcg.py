@@ -24,6 +24,8 @@ JSON schema::
       "sections": {
         "name": "Embuscade",
         "cost": 2,                    # int: drawn as N gold coins
+        "backdrop": "path/to/texture.jpg",      # optional: decorative background,
+        #                                           veiled 72% toward bg (stays subtle)
         "art": "path/to/art.jpg",           # full-bleed art, no text
         "type_line": "Action spéciale — Technologie",
         "rule": "Sentence one.\nSentence two.",   # \n = paragraph break
@@ -36,7 +38,7 @@ JSON schema::
 """
 from __future__ import annotations
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 DEFAULT_PALETTE = {
     "bg": (40, 32, 22), "band": (52, 40, 24), "gold": (176, 141, 74),
@@ -173,7 +175,12 @@ def render(data, fonts):
         pal[k] = hex_to_rgb(v) if isinstance(v, str) else tuple(v)
     cw = data.get("canvas", {}).get("width", 744)
     ch = data.get("canvas", {}).get("height", 1032)
-    c = Image.new("RGB", (cw, ch), pal["bg"])
+    base = Image.new("RGB", (cw, ch), pal["bg"])
+    if data.get("backdrop"):
+        bd = crop_to(Image.open(data["backdrop"]).convert("RGB"), cw, ch)
+        bd = bd.filter(ImageFilter.GaussianBlur(2))
+        base = Image.blend(bd, base, 0.30)  # veiled: decorative, never noise
+    c = base.convert("RGBA")
     d = ImageDraw.Draw(c)
 
     name_b = int(ch * F_NAME)
@@ -236,15 +243,25 @@ def render(data, fonts):
         y += 8
 
     if has_extra:
-        d.rounded_rectangle([MARGIN_X, r_bottom + 10, cw - MARGIN_X - 1, extra_b], radius=14,
-                            fill=pal["band"], outline=pal["gold"], width=3)
+        plate = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+        pd = ImageDraw.Draw(plate)
+        pd.rounded_rectangle([MARGIN_X, r_bottom + 10, cw - MARGIN_X - 1, extra_b], radius=14,
+                             fill=tuple(pal["band"]) + (216,),
+                             outline=pal["gold"] + (255,), width=3)
+        c.alpha_composite(plate)
+        d = ImageDraw.Draw(c)
         d.text((cw // 2, (r_bottom + 10 + extra_b) // 2 - 16), sec["extra_label"],
                font=ImageFont.truetype(fonts["r"], 26), fill=pal["subtitle"], anchor="mm")
         d.text((cw // 2, (r_bottom + 10 + extra_b) // 2 + 18), sec["extra_value"],
                font=ImageFont.truetype(fonts["b"], 32), fill=pal["text_light"], anchor="mm")
 
     foot_t = extra_b + 8
-    d.rectangle([26, foot_t, cw - 27, ch - 27], fill=pal["footer"], outline=pal["gold"], width=3)
+    plate = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+    pd = ImageDraw.Draw(plate)
+    pd.rectangle([26, foot_t, cw - 27, ch - 27],
+                 fill=tuple(pal["footer"]) + (216,), outline=pal["gold"] + (255,), width=3)
+    c.alpha_composite(plate)
+    d = ImageDraw.Draw(c)
     ff = ImageFont.truetype(fonts["r"], 24)
     d.text((48, (foot_t + ch - 27) // 2), sec.get("footer_left", ""), font=ff,
            fill=pal["footer_txt"], anchor="lm")
